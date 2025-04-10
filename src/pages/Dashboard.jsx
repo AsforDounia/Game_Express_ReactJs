@@ -14,13 +14,14 @@ import { useDashboard } from '../context/DashboardContext';
 const Dashboard = () => {
 
   const { dashboardData } = useDashboard();
+
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000);
+    const timer = setTimeout(() => setLoading(false), 100);
     return () => clearTimeout(timer);
-  }, []);
+  }, [dashboardData]);
 
   if (loading) {
     return (

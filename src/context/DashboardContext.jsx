@@ -15,9 +15,7 @@ export const DashboardProvider = ({ children }) => {
       if (!token) return;
 
       try {
-        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         const response = await api.get('v1/admin/dashboard');
-        // console.log('Dashboard data:', response.data.data);
         setDashboardData(response.data.data);
       } catch (err) {
         console.error('Dashboard fetch error:', err);
@@ -28,7 +26,7 @@ export const DashboardProvider = ({ children }) => {
     };
 
     fetchDashboardData();
-  }, [token]);
+  }, []);
 
   return (
     <DashboardContext.Provider value={{ dashboardData}}>

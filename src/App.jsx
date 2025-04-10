@@ -9,11 +9,17 @@ import Home from "./pages/Home";
 import Unauthorized from "./pages/Unauthorized";
 import Layout from "./Components/Layout";
 import { DashboardProvider } from "./context/DashboardContext";
+import ProductList from "./pages/ProductList";
+import { ProductProvider } from "./context/ProductContext";
+import ProductDetails from "./pages/ProductDetails";
+
 
 function App() {
   return (
     <Router>
       <AuthProvider>
+      <DashboardProvider>
+      <ProductProvider>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
@@ -27,17 +33,42 @@ function App() {
 
             {/* Protected routes */}
             <Route
+                  element={
+                    <ProtectedRoute roles={["product_manager", "super_admin"]} />
+                  }
+                >
+                  <Route path="dashboard" element={<Dashboard />} />
+                  <Route path="products" element={<ProductList />} />
+                  <Route path="productdetails/:id" element={<ProductDetails />} />
+                  <Route path="products-management" element={<div>Products Management</div>} />
+            </Route>
+            
+            {/* <Route
               element={
                 <ProtectedRoute roles={["product_manager", "super_admin"]} />
               }
             >
-           <Route
-                path="dashboard"
-                element={
-                  <DashboardProvider>
-                    <Dashboard />
-                  </DashboardProvider>
-                }
+              <Route
+                    path="dashboard"
+                    element={
+                      <DashboardProvider>
+                        <Dashboard />
+                      </DashboardProvider>
+                    }
+              />
+            </Route>
+            <Route
+              element={
+                <ProtectedRoute roles={["product_manager", "super_admin"]} />
+              }
+            >
+            <Route
+                    path="products"
+                    element={
+                      <ProductProvider>
+                        <ProductList />
+                      </ProductProvider>
+                    }
               />
             </Route>
 
@@ -54,10 +85,13 @@ function App() {
               }
             >
               <Route path="products" element={<div>Products Management</div>} />
-            </Route>
+            </Route> */}
           </Route>
           <Route path="*" element={<div>404</div>} />
         </Routes>
+      
+      </ProductProvider>
+      </DashboardProvider>
       </AuthProvider>
     </Router>
   );
