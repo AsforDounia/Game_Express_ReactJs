@@ -6,13 +6,15 @@ import { IoMdReturnLeft } from "react-icons/io";
 
 const ProductDetails = () => {
   const { id } = useParams();
-  const { showProduct, productDetails, loading, error } = useProducts();
+  const { showProduct, productDetails, loading, error , deleteProduct } = useProducts();
 
   useEffect(() => {
     showProduct(id);
   }, [id]); // Make sure to trigger the fetch whenever the ID changes
 
+  const handleDelete = (productId) => {
 
+  };
   if (loading) return <div>Loading product details...</div>;
   if (error) return <div>Error: {error}</div>;
   if (!productDetails) return <div>No product found.</div>;

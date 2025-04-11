@@ -4,8 +4,10 @@ import { useAuth } from "../context/AuthContext";
 import { FaTrash , FaEdit  } from "react-icons/fa";
 import { IoMdReturnLeft } from "react-icons/io";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const ProductList = () => {
-  const { fetchProducts, products } = useProducts();
+    const navigate = useNavigate();
+  const { fetchProducts, products , deleteProduct } = useProducts();
   const { user } = useAuth();
   const roles = user?.roles?.map((role) => role.name);
   const isSuperAdmin = roles?.includes("super_admin");
@@ -13,22 +15,25 @@ const ProductList = () => {
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [products]);
 
   const handleEdit = (productId) => {
-    console.log("Edit product:", productId);
-    // navigate to edit page or open modal
+    navigate(`/editproduct/${productId}`);
   };
 
   const handleDelete = (productId) => {
-    console.log("Delete product:", productId);
-    // call delete logic here
+    deleteProduct(productId);
   };
 
   return (
     <>
-      <div className="flex justify-center items-center mb-4">
+      <div className="flex justify-between items-center mb-4 px-8">
         <h1 className="text-3xl font-semibold">Game Express Products</h1>
+        <Link to={`/addproduct`}>
+          <button className="ml-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+            Add Product
+          </button>
+        </Link>
       </div>
 
       <div className="p-6 grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

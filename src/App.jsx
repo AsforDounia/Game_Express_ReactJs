@@ -12,6 +12,9 @@ import { DashboardProvider } from "./context/DashboardContext";
 import ProductList from "./pages/ProductList";
 import { ProductProvider } from "./context/ProductContext";
 import ProductDetails from "./pages/ProductDetails";
+import AddProduct from "./pages/AddProduct";
+import EditProduct from "./pages/EditProduct";
+import { SubCategoryProvider } from "./context/SubCategoryContext";
 
 
 function App() {
@@ -20,6 +23,7 @@ function App() {
       <AuthProvider>
       <DashboardProvider>
       <ProductProvider>
+        <SubCategoryProvider>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
@@ -40,6 +44,8 @@ function App() {
                   <Route path="dashboard" element={<Dashboard />} />
                   <Route path="products" element={<ProductList />} />
                   <Route path="productdetails/:id" element={<ProductDetails />} />
+                  <Route path="editproduct/:id" element={<EditProduct />} />
+                  <Route path="addproduct" element={<AddProduct />} />
                   <Route path="products-management" element={<div>Products Management</div>} />
             </Route>
             
@@ -89,7 +95,7 @@ function App() {
           </Route>
           <Route path="*" element={<div>404</div>} />
         </Routes>
-      
+        </SubCategoryProvider>
       </ProductProvider>
       </DashboardProvider>
       </AuthProvider>
