@@ -18,8 +18,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/');
-
+      // navigate('/');
     }
   }, [isAuthenticated, navigate]);
 
@@ -41,7 +40,7 @@ const Login = () => {
       const { data } = await api.get('/user');
 
       if (result.success) {
-        navigate('/');
+        // navigate('/');
 
       } else {
         setError(result.message);

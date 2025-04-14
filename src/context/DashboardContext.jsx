@@ -10,8 +10,7 @@ export const DashboardProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
+  const fetchDashboardData = async () => {
       if (!token) return;
 
       try {
@@ -25,11 +24,9 @@ export const DashboardProvider = ({ children }) => {
       }
     };
 
-    fetchDashboardData();
-  }, []);
 
   return (
-    <DashboardContext.Provider value={{ dashboardData}}>
+    <DashboardContext.Provider value={{ dashboardData , fetchDashboardData}}>
       {children}
     </DashboardContext.Provider>
   );

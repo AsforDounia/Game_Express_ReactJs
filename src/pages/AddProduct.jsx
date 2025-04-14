@@ -3,8 +3,9 @@ import axios from "axios";
 import api from "../api/axios";
 import { FaTag, FaAlignLeft, FaDollarSign, FaImage } from "react-icons/fa";
 import { useProducts } from "../context/ProductContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSubCategory } from "../context/SubCategoryContext";
+import { IoMdReturnLeft } from "react-icons/io";
 
 export default function AddProduct() {
     const navigate = useNavigate();
@@ -93,6 +94,9 @@ export default function AddProduct() {
   return (
     <div className="m-8 bg-gray-50 flex items-center justify-center px-4 py-8 font-sans">
       <div className="w-full max-w-3xl bg-white shadow-lg rounded-xl p-8">
+      <Link to={`/products`}>
+                <IoMdReturnLeft className="text-2xl text-gray-500 hover:text-gray-700 mb-4" />
+        </Link>
         <h2 className="text-2xl font-bold text-blue-950 mb-6 text-center">Create New Product</h2>
 
         <form onSubmit={handleSubmit}>

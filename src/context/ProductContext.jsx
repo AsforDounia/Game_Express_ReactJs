@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import axios from 'axios';
+
 import api from '../api/axios';
 
 const ProductContext = createContext();
@@ -56,15 +56,17 @@ export const ProductProvider = ({ children }) => {
     const updateProduct = async (id, formData) => {
         setLoading(true);
         try {
-            const response = await axios.post(`/api/v1/admin/products/${id}`, formData, {
+            const response = await api.post(`v1/admin/products/${id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'X-HTTP-Method-Override': 'PUT'
                 }
             });
+            console.log(response);
             setProducts(prev =>
                 prev.map(p => (p.id === id ? response.data.product : p))
             );
+            console.log(response.data.product);
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to update product');
         } finally {
@@ -82,13 +84,11 @@ export const ProductProvider = ({ children }) => {
             setError(err.response?.data?.message || 'Failed to delete product');
         } finally {
             setLoading(false);
-            
+
         }
     };
 
-    useEffect(() => {
-        fetchProducts();
-    }, []);
+
 
     return (
         <ProductContext.Provider value={{
