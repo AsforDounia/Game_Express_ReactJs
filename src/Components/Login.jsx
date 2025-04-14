@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { FaHeartbeat, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaGoogle, FaFacebook } from 'react-icons/fa';
 import { PiGameControllerFill } from "react-icons/pi";
 import { Link } from 'react-router-dom';
+import { apiV1 } from '../api/axios';
 
 function Login() {
   
@@ -23,7 +24,7 @@ function Login() {
 
       const onSubmit = async (data) => {
         try {
-            const res = await axios.post("http://127.0.0.1:8000/api/v1/admin/login", data, {
+            const res = await apiV1.post("login", data, {
                 headers: {
                     "Content-Type": "application/json",
                     Accept: "application/json",

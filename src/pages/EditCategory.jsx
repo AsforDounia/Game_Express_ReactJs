@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCategory } from "../context/CategoryContext";
+import { toast } from "react-toastify";
 
 const EditCategory = () => {
   const { id } = useParams();
@@ -41,6 +42,8 @@ useEffect(() => {
     e.preventDefault();
     try {
         const response = await editCategory(id, categoryData);
+        toast.success("Category updated successfully.");
+        setCategoryData({ name: "", slug: "" });
         navigate("/categories");
     } catch (error) {
         console.error("Error updating category:", error);

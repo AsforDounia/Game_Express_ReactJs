@@ -3,6 +3,7 @@ import { useCategory } from '../context/CategoryContext';
 import { Link } from 'react-router-dom';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { toast } from "react-toastify";
 
 function CategoriesList() {
     const { fetchCategories, categories, loading, error, deleteCategory, editCategory, addCategory  } = useCategory();
@@ -23,10 +24,10 @@ function CategoriesList() {
         if (window.confirm("Are you sure you want to delete this category?")) {
             try {
                 deleteCategory(id);
-                alert("Category deleted successfully.");
+                toast.success("Category deleted successfully.");
             } catch (error) {
                 console.error("Delete error:", error);
-                alert("Failed to delete category.");
+                toast.error("Failed to delete category.");
             }
         }
     };
@@ -35,13 +36,13 @@ function CategoriesList() {
         e.preventDefault();
         try {
             await addCategory(newCategory);
-            alert("Category added successfully.");
+            toast.success("Category added successfully.");  
             setNewCategory({ name: '' });
             
             setIsFormVisible(false);  // Hide form after submission
         } catch (error) {
             console.error("Add category error:", error);
-            alert("Failed to add category.");
+            toast.error("Failed to add category.");
         }
     };
 

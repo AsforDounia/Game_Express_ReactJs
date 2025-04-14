@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import api from '../api/axios';
+import api, { apiV1 } from '../api/axios';
 
 const SubCategoryContext = createContext();
 
@@ -13,7 +13,7 @@ export const SubCategoryProvider = ({ children }) => {
     // Fetch products
     const fetchSubcategories = async () => {
         try {
-          const response = await api.get("v1/admin/subcategories");
+          const response = await apiV1.get("subcategories");
           setSubCategories(response.data.subcategories);
         } catch (error) {
           console.error("Error fetching subcategories:", error);
@@ -23,8 +23,7 @@ export const SubCategoryProvider = ({ children }) => {
       const addSubCategory = async (formData) => {
         setLoading(true);
         try {
-          console.log(formData);
-            const response = await api.post('v1/admin/subcategories', formData);
+            const response = await apiV1.post('subcategories', formData);
             console.log(response.data.subcategory);
             setSubCategories(prev => [...prev, response.data.subcategory]);
         } catch (err) {
@@ -37,7 +36,7 @@ export const SubCategoryProvider = ({ children }) => {
     const deleteSubCategory = async (id) => {
       setLoading(true);
       try {
-        const response = await api.delete(`v1/admin/subcategories/${id}`);
+        const response = await apiV1.delete(`subcategories/${id}`);
         setSubCategories(prev => prev.filter(subCategory => subCategory.id !== id));
       }
       catch (err) {
@@ -53,7 +52,7 @@ export const SubCategoryProvider = ({ children }) => {
         try {
             console.log(subCategoryData);
             console.log(id);
-            const response = await api.put(`v1/admin/subcategories/${id}`, subCategoryData);
+            const response = await apiV1.put(`subcategories/${id}`, subCategoryData);
         }
         catch (err) {
             setError(err.response?.data?.message || 'Failed to update subcategory');

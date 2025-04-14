@@ -16,10 +16,10 @@ const Sidebar = () => {
     { to: '/dashboard', label: 'Dashboard' },
     { to: '/products', label: 'Products' },
     { to: '/categories', label: 'Categories' },
-    { to: '/subcategories', label: 'Subcategories' },
-    { to: '/users', label: 'Users' },
-    { to: '/roles', label: 'Roles' },
-    { to: '/permissions', label: 'Permissions' }, // Optional if you have a frontend route for updateRolePermitions
+    // { to: '/subcategories', label: 'Subcategories' },
+    // { to: '/users', label: 'Users' },
+    // { to: '/roles', label: 'Roles' },
+    // { to: '/permissions', label: 'Permissions' }, // Optional if you have a frontend route for updateRolePermitions
   ];
 
   return (
