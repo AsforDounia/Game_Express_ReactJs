@@ -20,6 +20,7 @@ import CategotiesList from "./pages/CategotiesList";
 import EditCategory from "./pages/EditCategory";
 import CategoryDetails from "./pages/CategoryDetails";
 
+
 function App() {
   return (
     <Router>

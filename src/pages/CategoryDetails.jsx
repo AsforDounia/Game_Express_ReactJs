@@ -5,6 +5,8 @@ import { useCategory } from "../context/CategoryContext";
 import { IoMdReturnLeft } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { useSubCategory } from "../context/SubCategoryContext";
+import { toast } from "react-toastify";
+
 
 const CategoryDetails = () => {
     const navigate = useNavigate();
@@ -42,11 +44,11 @@ const CategoryDetails = () => {
         if (window.confirm("Are you sure you want to delete this category?")) {
             try {
                 await deleteCategory(id);
-                alert("Category deleted successfully.");
+                toast.success("Category deleted successfully.");
                 navigate("/categories");
             } catch (error) {
                 console.error("Delete error:", error);
-                alert("Failed to delete category.");
+                toast.error("Failed to delete category.");
             }
         }
     };
@@ -54,7 +56,7 @@ const CategoryDetails = () => {
     const handleAddSubcategory = async (e) => {
         e.preventDefault();
         if (!newSubcategoryName.trim()) {
-            alert("Please enter a subcategory name.");
+            toast.error("Please enter a subcategory name.");
             return;
         }
 
@@ -67,12 +69,12 @@ const CategoryDetails = () => {
             };
 
             await addSubCategory(newSubcategory);
-            alert("Subcategory added successfully.");
+            toast.success("Subcategory added successfully.");
             setNewSubcategoryName("");
             displayCategory(id);
         } catch (error) {
             console.error("Add subcategory error:", error);
-            alert("Failed to add subcategory.");
+            toast.error("Failed to add subcategory.");
         } finally {
             setSubmitting(false);
         }
@@ -82,11 +84,11 @@ const CategoryDetails = () => {
         if (window.confirm("Are you sure you want to delete this subcategory?")) {
             try {
                 await deleteSubCategory(id);
-                alert("Subcategory deleted successfully.");
+                toast.success("Subcategory deleted successfully.");
                 displayCategory(id);
             } catch (error) {
                 console.error("Delete error:", error);
-                alert("Failed to delete subcategory.");
+                toast.error("Failed to delete subcategory.");
             }
         }
     };
@@ -104,7 +106,7 @@ const CategoryDetails = () => {
     const handleSaveEditSub = async (e) => {
         e.preventDefault();
         if (!editingSubcategoryName.trim()) {
-            alert("Please enter a subcategory name.");
+            toast.error("Please enter a subcategory name.");
             return;
         }
 
@@ -116,13 +118,13 @@ const CategoryDetails = () => {
             };
 
             await editSubCategory(editingSubcategoryId , updatedSubcategory);
-            alert("Subcategory updated successfully.");
+            toast.success("Subcategory updated successfully.");
             setEditingSubcategoryId(null);
             setEditingSubcategoryName("");
             displayCategory(id);
         } catch (error) {
             console.error("Edit subcategory error:", error);
-            alert("Failed to update subcategory.");
+            toast.error("Failed to update subcategory.");
         } finally {
             setSubmitting(false);
         }

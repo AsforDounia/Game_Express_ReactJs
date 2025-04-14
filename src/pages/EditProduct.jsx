@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useProducts } from "../context/ProductContext";
 import { useSubCategory } from "../context/SubCategoryContext";
 import { IoMdReturnLeft } from "react-icons/io";
+import { toast } from "react-toastify";
 
 export default function EditProduct() {
     const navigate = useNavigate();
@@ -155,6 +156,7 @@ export default function EditProduct() {
             setExistingOtherImages([]);
             setPreviewPrimaryImage(null);
             setDeletedImages([]);
+            toast.success("Product updated successfully!");
             navigate("/products");
         } catch (error) {
             console.error("Error updating product:", error);
