@@ -1,27 +1,28 @@
-import { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import {
   FiShoppingCart,
   FiUsers,
   FiBarChart2,
-  FiActivity
-} from 'react-icons/fi';
+  FiActivity,
+} from "react-icons/fi";
 import { BiCategory } from "react-icons/bi";
 import { MdOutlineCategory } from "react-icons/md";
-import { useDashboard } from '../context/DashboardContext';
-
+import { useDashboard } from "../context/DashboardContext";
 
 const Dashboard = () => {
-
-  const { dashboardData } = useDashboard();
-
+  const { dashboardData, fetchDashboardData } = useDashboard();
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 100);
-    return () => clearTimeout(timer);
-  }, [dashboardData]);
+    const fetchData = async () => {
+      await fetchDashboardData();
+      setLoading(false); // Set loading to false after data is fetched
+    };
+
+    fetchData();
+  }, [fetchDashboardData]);
 
   if (loading) {
     return (
@@ -31,24 +32,32 @@ const Dashboard = () => {
     );
   }
 
+  if (!dashboardData) {
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <p className="text-gray-500">No dashboard data available.</p>
+      </div>
+    );
+  }
+
   const cards = [
     {
-      title: 'Total Products',
+      title: "Total Products",
       icon: <FiShoppingCart className="text-blue-500 text-xl" />,
       value: dashboardData.total_products || 0,
     },
     {
-      title: 'Total Users',
+      title: "Total Users",
       icon: <FiUsers className="text-blue-500 text-xl" />,
       value: dashboardData.total_users || 0,
     },
     {
-      title: 'Total Categories',
+      title: "Total Categories",
       icon: <BiCategory className="text-blue-500 text-xl" />,
       value: dashboardData.total_categories || 0,
     },
     {
-      title: 'Total SubCategories',
+      title: "Total SubCategories",
       icon: <MdOutlineCategory className="text-blue-500 text-xl" />,
       value: dashboardData.total_subcategories || 0,
     },
@@ -57,9 +66,7 @@ const Dashboard = () => {
   return (
     <div className="max-w-6xl mx-auto px-4 mt-10 mb-10">
       <h1 className="text-3xl font-semibold mb-2">Dashboard</h1>
-      <p className="text-gray-600 mb-8">
-        Welcome back, {user.name}
-      </p>
+      <p className="text-gray-600 mb-8">Welcome back, {user.name}</p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         {cards.map((card, idx) => (
@@ -73,55 +80,43 @@ const Dashboard = () => {
         ))}
       </div>
 
-      {/* <div className="mt-10 bg-white shadow rounded-lg p-6">
-        <h2 className="text-xl font-semibold mb-2">Product with low stock</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Product Name</th>
-              <th>Quantity</th>
-            </tr>
-          </thead>
-          <tbody>
-            {dashboardData.low_stock_products.map((product, idx) => (
-              <tr key={idx}>
-                <td>{product.name}</td>
-                <td>{product.stock}</td>
+      <div className="mt-10 bg-white shadow rounded-lg p-6">
+        <h2 className="text-xl font-semibold mb-4">Products with Low Stock</h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full table-auto border-collapse">
+            <thead>
+              <tr className="bg-gray-100 text-left">
+                <th className="px-4 py-2 text-sm font-semibold text-gray-600 border-b">
+                  Product Name
+                </th>
+                <th className="px-4 py-2 text-sm font-semibold text-gray-600 border-b">
+                  Quantity
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-
-      </div> */}
-
-<div className="mt-10 bg-white shadow rounded-lg p-6">
-  <h2 className="text-xl font-semibold mb-4">Products with Low Stock</h2>
-  <div className="overflow-x-auto">
-    <table className="min-w-full table-auto border-collapse">
-      <thead>
-        <tr className="bg-gray-100 text-left">
-          <th className="px-4 py-2 text-sm font-semibold text-gray-600 border-b">Product Name</th>
-          <th className="px-4 py-2 text-sm font-semibold text-gray-600 border-b">Quantity</th>
-        </tr>
-      </thead>
-      <tbody>
-        {dashboardData.low_stock_products.map((product, idx) => (
-          <tr
-            key={idx}
-            className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
-          >
-            <td className="px-4 py-2 border-b text-sm text-gray-700">{product.name}</td>
-            <td className="px-4 py-2 border-b text-sm text-gray-700">{product.stock}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-    {dashboardData.low_stock_products.length === 0 && (
-      <p className="text-sm text-gray-500 mt-4">No low-stock products found.</p>
-    )}
-  </div>
-</div>
-
+            </thead>
+            <tbody>
+              {dashboardData.low_stock_products.map((product, idx) => (
+                <tr
+                  key={idx}
+                  className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                >
+                  <td className="px-4 py-2 border-b text-sm text-gray-700">
+                    {product.name}
+                  </td>
+                  <td className="px-4 py-2 border-b text-sm text-gray-700">
+                    {product.stock}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {dashboardData.low_stock_products.length === 0 && (
+            <p className="text-sm text-gray-500 mt-4">
+              No low-stock products found.
+            </p>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

@@ -54,8 +54,7 @@ const Layout = () => {
           <Sidebar />
         </div>
       )}
-      {/* Main content area */}
-      {/* <Sidebar /> */}
+
       <main className="container mx-auto px-4 mt-8 relative top-16 w-3/4">
         <Outlet />
       </main>

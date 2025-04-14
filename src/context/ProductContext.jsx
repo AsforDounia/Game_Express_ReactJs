@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import axios from 'axios';
+
 import api from '../api/axios';
 
 const ProductContext = createContext();
@@ -40,9 +40,10 @@ export const ProductProvider = ({ children }) => {
     const createProduct = async (formData) => {
         setLoading(true);
         try {
-            const response = await axios.post('/api/v1/admin/products', formData, {
+            const response = await api.post('v1/admin/products', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
+            console.log(response.data.product);
             setProducts(prev => [...prev, response.data.product]);
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to create product');
@@ -55,15 +56,17 @@ export const ProductProvider = ({ children }) => {
     const updateProduct = async (id, formData) => {
         setLoading(true);
         try {
-            const response = await axios.post(`/api/v1/admin/products/${id}`, formData, {
+            const response = await api.post(`v1/admin/products/${id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'X-HTTP-Method-Override': 'PUT'
                 }
             });
+            console.log(response);
             setProducts(prev =>
                 prev.map(p => (p.id === id ? response.data.product : p))
             );
+            console.log(response.data.product);
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to update product');
         } finally {
@@ -75,18 +78,17 @@ export const ProductProvider = ({ children }) => {
     const deleteProduct = async (id) => {
         setLoading(true);
         try {
-            await axios.delete(`/api/v1/admin/products/${id}`);
+            await api.delete(`v1/admin/products/${id}`);
             setProducts(prev => prev.filter(p => p.id !== id));
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to delete product');
         } finally {
             setLoading(false);
+
         }
     };
 
-    useEffect(() => {
-        fetchProducts();
-    }, []);
+
 
     return (
         <ProductContext.Provider value={{
