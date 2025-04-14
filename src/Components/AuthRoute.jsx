@@ -3,7 +3,6 @@ import { useAuth } from '../context/AuthContext';
 
 const AuthRoute = () => {
   const { isAuthenticated, loading ,user } = useAuth();
-  console.log("user",user);
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[80vh]">

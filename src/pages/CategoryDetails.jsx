@@ -130,8 +130,13 @@ const CategoryDetails = () => {
         }
     };
 
-    if (loadingCategory)
-        return <div className="text-center py-10">Loading category details...</div>;
+    if (loadingCategory) {
+        return (
+            <div className="flex justify-center items-center min-h-[60vh]">
+                <div className="w-12 h-12 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
+            </div>
+        );
+    }
     if (error)
         return <div className="text-center text-red-500 py-4">{error}</div>;
     if (!categoryDetails)

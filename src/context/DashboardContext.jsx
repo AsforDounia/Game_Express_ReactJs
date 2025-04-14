@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import api from '../api/axios';
+import  { apiV1 } from '../api/axios';
 import { useAuth } from './AuthContext';
 
 const DashboardContext = createContext();
@@ -14,7 +14,7 @@ export const DashboardProvider = ({ children }) => {
       if (!token) return;
 
       try {
-        const response = await api.get('v1/admin/dashboard');
+        const response = await apiV1.get('dashboard');
         setDashboardData(response.data.data);
       } catch (err) {
         console.error('Dashboard fetch error:', err);

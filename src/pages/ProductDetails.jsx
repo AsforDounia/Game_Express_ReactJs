@@ -5,26 +5,31 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { IoMdReturnLeft } from "react-icons/io";
 import { useAuth } from "../context/AuthContext";
 
-
-
 const ProductDetails = () => {
-
   const { user } = useAuth();
   const roles = user?.roles?.map((role) => role.name);
   const isSuperAdmin = roles?.includes("super_admin");
   const isProductManager = roles?.includes("product_manager");
 
-
   const { id } = useParams();
   const navigate = useNavigate();
-  const { showProduct, productDetails, loading, error, deleteProduct } = useProducts();
+  const { showProduct, productDetails, deleteProduct } = useProducts();
 
   const [primaryImage, setPrimaryImage] = useState(null);
   const [otherImages, setOtherImages] = useState([]);
+  const [loading, setLoading] = useState(false); // Loader state
+  const [error, setError] = useState(null); // Error state
 
   useEffect(() => {
     const fetchData = async () => {
-      await showProduct(id);
+      try {
+        setLoading(true); // Start loading
+        await showProduct(id);
+      } catch (err) {
+        setError("Failed to load product details.");
+      } finally {
+        setLoading(false); // Stop loading
+      }
     };
 
     fetchData();
@@ -39,19 +44,29 @@ const ProductDetails = () => {
     }
   }, [productDetails]);
 
-  const handleEdit = (productId) => {
-    navigate(`/editproduct/${productId}`);
-  };
-
   const handleDelete = async (productId) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
-      await deleteProduct(productId);
-      navigate("/products");
+      setLoading(true); // Start loading
+      try {
+        await deleteProduct(productId);
+        navigate("/products");
+      } catch (err) {
+        setError("Failed to delete product.");
+      } finally {
+        setLoading(false); // Stop loading
+      }
     }
   };
 
-  if (loading) return <div>Loading product details...</div>;
-  if (error) return <div>Error loading product details: {error}</div>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <div className="w-12 h-12 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (error) return <div className="text-red-500 text-center">{error}</div>;
   if (!productDetails) return <div>Product not found.</div>;
 
   return (
@@ -62,20 +77,20 @@ const ProductDetails = () => {
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold mb-4">{productDetails.name} Details</h1>
         {(isSuperAdmin || isProductManager) && (
-        <div className="text-2xl font-bold mb-4 flex gap-2">
-          <button
-            onClick={() => handleEdit(productDetails.id)}
-            className="text-blue-500 hover:text-blue-700 cursor-pointer"
-          >
-            <FaEdit />
-          </button>
-          <button
-            onClick={() => handleDelete(productDetails.id)}
-            className="text-red-500 hover:text-red-700 cursor-pointer"
-          >
-            <FaTrash />
-          </button>
-        </div>
+          <div className="text-2xl font-bold mb-4 flex gap-2">
+            <button
+              onClick={() => navigate(`/editproduct/${productDetails.id}`)}
+              className="text-blue-500 hover:text-blue-700 cursor-pointer"
+            >
+              <FaEdit />
+            </button>
+            <button
+              onClick={() => handleDelete(productDetails.id)}
+              className="text-red-500 hover:text-red-700 cursor-pointer"
+            >
+              <FaTrash />
+            </button>
+          </div>
         )}
       </div>
 

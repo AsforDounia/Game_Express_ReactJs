@@ -10,7 +10,7 @@ const Layout = () => {
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
 
   return (
-    <>
+    <div className='bg-gray-50'>
       {!isAuthPage && (
         <header className="bg-blue-950 text-white fixed top-0 left-0 w-full z-10 shadow-md h-16 flex flex-col justify-center px-2 z-40">
           <div className="container px-12 py-4 flex justify-between items-center">
@@ -35,6 +35,9 @@ const Layout = () => {
                 </>
               ) : (
                 <>
+                  <Link to="/products" className="hover:underline">
+                    Products
+                  </Link>
                   <Link to="/login" className="hover:underline">
                     Login
                   </Link>
@@ -59,7 +62,7 @@ const Layout = () => {
         <Outlet />
       </main>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-import api from '../api/axios';
+import api, { apiV1 } from '../api/axios';
 
 const ProductContext = createContext();
 
@@ -15,7 +15,7 @@ export const ProductProvider = ({ children }) => {
     const fetchProducts = async () => {
         setLoading(true);
         try {
-            const response = await api.get('v1/admin/products');
+            const response = await apiV1.get('products');
             setProducts(response.data.products);
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to fetch products');
@@ -27,7 +27,7 @@ export const ProductProvider = ({ children }) => {
     const showProduct = async (id) => {
         setLoading(true);
         try {
-          const response = await api.get(`v1/admin/products/${id}`);
+          const response = await apiV1.get(`products/${id}`);
           setProductDetails(response.data.product);
         } catch (err) {
           setError(err.response?.data?.message || 'Failed to fetch product details');
@@ -40,7 +40,7 @@ export const ProductProvider = ({ children }) => {
     const createProduct = async (formData) => {
         setLoading(true);
         try {
-            const response = await api.post('v1/admin/products', formData, {
+            const response = await apiV1.post('products', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             console.log(response.data.product);
@@ -56,7 +56,7 @@ export const ProductProvider = ({ children }) => {
     const updateProduct = async (id, formData) => {
         setLoading(true);
         try {
-            const response = await api.post(`v1/admin/products/${id}`, formData, {
+            const response = await apiV1.post(`products/${id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'X-HTTP-Method-Override': 'PUT'
@@ -78,7 +78,7 @@ export const ProductProvider = ({ children }) => {
     const deleteProduct = async (id) => {
         setLoading(true);
         try {
-            await api.delete(`v1/admin/products/${id}`);
+            await apiV1.delete(`products/${id}`);
             setProducts(prev => prev.filter(p => p.id !== id));
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to delete product');
