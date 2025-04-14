@@ -1,127 +1,232 @@
-import React, { useEffect, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import api from "../api/axios";
+import { FaTag, FaAlignLeft, FaDollarSign, FaImage } from "react-icons/fa";
 import { useProducts } from "../context/ProductContext";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { useSubCategory } from "../context/SubCategoryContext";
 import { IoMdReturnLeft } from "react-icons/io";
-import { useAuth } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
-const ProductDetails = () => {
-  const { user } = useAuth();
-  const roles = user?.roles?.map((role) => role.name);
-  const isSuperAdmin = roles?.includes("super_admin");
-  const isProductManager = roles?.includes("product_manager");
 
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const { showProduct, productDetails, deleteProduct } = useProducts();
+export default function AddProduct() {
+    const navigate = useNavigate();
+    const { createProduct } = useProducts();
+    const { subCategories, fetchSubcategories } = useSubCategory();
+    const [productData, setProductData] = useState({
+        name: "",
+        price: "",
+        stock: "",
+        subcategory_id: "",
+        primaryImage: null,
+        otherImages: [null],
+    });
 
-  const [primaryImage, setPrimaryImage] = useState(null);
-  const [otherImages, setOtherImages] = useState([]);
-  const [loading, setLoading] = useState(true); // Loader state
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true); // Start loading
-        await showProduct(id);
-      } finally {
-        setLoading(false); // Stop loading
-      }
+    useEffect(() => {
+        fetchSubcategories();
+    }, []);
+
+    const handleInputChange = (e) => {
+        setProductData({
+            ...productData,
+            [e.target.name]: e.target.value,
+        });
     };
 
-    fetchData();
-  }, [id]);
+    const handlePrimaryImageChange = (e) => {
+        setProductData({
+            ...productData,
+            primaryImage: e.target.files[0],
+        });
+    };
 
-  useEffect(() => {
-    if (productDetails && productDetails.product_images) {
-      const primary = productDetails.product_images.find((img) => img.is_primary)?.image_url;
-      const others = productDetails.product_images.filter((img) => !img.is_primary);
-      setPrimaryImage(primary);
-      setOtherImages(others);
-    }
-  }, [productDetails]);
+    const handleOtherImageChange = (index, file) => {
+        const updatedImages = [...productData.otherImages];
+        updatedImages[index] = file;
+        setProductData({
+            ...productData,
+            otherImages: updatedImages,
+        });
+    };
 
-  const handleDelete = async (productId) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      setLoading(true); // Start loading
-      try {
-        await deleteProduct(productId);
-        navigate("/products");
-      } finally {
-        setLoading(false); // Stop loading
-      }
-    }
-  };
+    const addOtherImageField = () => {
+        setProductData({
+            ...productData,
+            otherImages: [...productData.otherImages, null],
+        });
+    };
 
-  if (loading) {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+
+        formData.append("name", productData.name);
+        formData.append("price", productData.price);
+        formData.append("stock", productData.stock);
+        formData.append("subcategory_id", productData.subcategory_id);
+
+        if (productData.primaryImage) {
+            formData.append("primary_image", productData.primaryImage);
+        }
+
+        productData.otherImages.forEach((img) => {
+            if (img) {
+                formData.append("images[]", img);
+            }
+        });
+
+        try {
+            createProduct(formData);
+            // alert("Product created!");
+            toast.success("Product created !");
+            setProductData({
+                name: "",
+                price: "",
+                stock: "",
+                subcategory_id: "",
+                primaryImage: null,
+                otherImages: [null],
+            });
+            navigate("/products");
+        } catch (error) {
+            console.error("Error submitting product:", error);
+        }
+    };
+
     return (
-      <div className="flex justify-center items-center min-h-[60vh]">
-        <div className="w-12 h-12 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
-      </div>
-    );
-  }
+        <div className="m-8 bg-gray-50 flex items-center justify-center px-4 py-8 font-sans">
+            <div className="w-full max-w-3xl bg-white shadow-lg rounded-xl p-8">
+                <Link to={`/products`}>
+                    <IoMdReturnLeft className="text-2xl text-gray-500 hover:text-gray-700 mb-4" />
+                </Link>
+                <h2 className="text-2xl font-bold text-blue-950 mb-6 text-center">Create New Product</h2>
 
-  if (!productDetails) return <div>Product not found.</div>;
+                <form onSubmit={handleSubmit}>
+                    {/* Product Name */}
+                    <div className="mb-4">
+                        <label htmlFor="name" className="block text-blue-950 font-medium mb-2">Nom du produit</label>
+                        <div className="relative">
+                            <FaTag className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                            <input
+                                type="text"
+                                name="name"
+                                value={productData.name}
+                                onChange={handleInputChange}
+                                placeholder="Nom du produit"
+                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal"
+                                required
+                            />
+                        </div>
+                    </div>
 
-  return (
-    <div className="max-w-4xl mx-auto p-6">
-      <Link to={`/products`}>
-        <IoMdReturnLeft className="text-2xl text-gray-500 hover:text-gray-700 mb-4" />
-      </Link>
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-3xl font-bold mb-4">{productDetails.name} Details</h1>
-        {(isSuperAdmin || isProductManager) && (
-          <div className="text-2xl font-bold mb-4 flex gap-2">
-            <button
-              onClick={() => navigate(`/editproduct/${productDetails.id}`)}
-              className="text-blue-500 hover:text-blue-700 cursor-pointer"
-            >
-              <FaEdit />
-            </button>
-            <button
-              onClick={() => handleDelete(productDetails.id)}
-              className="text-red-500 hover:text-red-700 cursor-pointer"
-            >
-              <FaTrash />
-            </button>
-          </div>
-        )}
-      </div>
 
-      {/* Display Primary Image */}
-      {primaryImage && (
-        <div className="w-full h-96 mb-4">
-          <img
-            src={`http://127.0.0.1:8000/storage/${primaryImage}`}
-            alt={productDetails.name}
-            className="w-full h-full object-cover rounded-xl shadow"
-          />
+                    {/* Price */}
+                    <div className="mb-4">
+                        <label htmlFor="price" className="block text-blue-950 font-medium mb-2">Prix</label>
+                        <div className="relative">
+                            <FaDollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                            <input
+                                type="number"
+                                name="price"
+                                value={productData.price}
+                                onChange={handleInputChange}
+                                placeholder="0.00"
+                                step="0.01"
+                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal"
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    {/* Stock */}
+                    <div className="mb-4">
+                        <label htmlFor="stock" className="block text-blue-950 font-medium mb-2">Stock</label>
+                        <div className="relative">
+                            <FaTag className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                            <input
+                                type="number"
+                                name="stock"
+                                value={productData.stock}
+                                onChange={handleInputChange}
+                                placeholder="Stock"
+                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal"
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    {/* Subcategory */}
+                    <div className="mb-4">
+                        <label htmlFor="subcategory_id" className="block text-blue-950 font-medium mb-2">Sous-catégorie</label>
+                        <select
+                            name="subcategory_id"
+                            value={productData.subcategory_id}
+                            onChange={handleInputChange}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal"
+                            required
+                        >
+                            <option value="">Select a subcategory</option>
+                            {subCategories.map((subcat) => (
+                                <option key={subcat.id} value={subcat.id}>
+                                    {subcat.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Primary Image Upload */}
+                    <div className="mb-4">
+                        <label htmlFor="primaryImage" className="block text-blue-950 font-medium mb-2">Image principale</label>
+                        { productData.primaryImage ? (
+                            <img
+                                src={URL.createObjectURL(productData.primaryImage)}
+                                alt="Primary Preview"
+                                className="w-full h-auto mb-2 rounded-lg"
+                            />
+                        ) : null}
+                        <div className="relative">
+                            <FaImage className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handlePrimaryImageChange}
+                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-teal"
+
+                            />
+                        </div>
+                    </div>
+
+                    {/* Other Images Upload */}
+                    <div className="mb-4">
+                        <label className="block text-blue-950 font-medium mb-2">Autres images</label>
+                        {productData.otherImages.map((_, index) => (
+                            <div key={index} className="mb-2">
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => handleOtherImageChange(index, e.target.files[0])}
+                                    className="w-full py-2 px-4 border border-gray-300 rounded-lg focus:outline-none focus:border-teal"
+                                />
+                            </div>
+                        ))}
+                        <button
+                            type="button"
+                            onClick={addOtherImageField}
+                            className="text-sm mt-2 px-4 py-2 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200 transition"
+                        >
+                            + Ajouter une autre image
+                        </button>
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="w-full bg-blue-900 text-white py-3 rounded-lg hover:bg-blue-950 transition-colors"
+                    >
+                        Enregistrer le produit
+                    </button>
+                </form>
+            </div>
         </div>
-      )}
-
-      {/* Product Details */}
-      <div className="mb-4">
-        <h1 className="text-3xl font-bold mb-2">{productDetails.name}</h1>
-        <p className="text-gray-500 text-sm mb-1">
-          Category: {productDetails.subcategory?.name || "N/A"}
-        </p>
-        <p className="text-green-600 font-bold text-xl mb-4">${productDetails.price}</p>
-        <span
-          className={`inline-block px-3 py-1 mb-3 text-sm font-medium rounded-full ${
-            productDetails.status === "available"
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800"
-          }`}
-        >
-          {productDetails.status === "available" ? "In Stock" : "Out of Stock"}
-        </span>
-        <p className="text-gray-400 mb-2">Stock: {productDetails.stock}</p>
-        {productDetails.description && (
-          <p className="text-gray-700 mt-4">{productDetails.description}</p>
-        )}
-      </div>
-    </div>
-  );
-};
-
-export default ProductDetails;
+    );
+}

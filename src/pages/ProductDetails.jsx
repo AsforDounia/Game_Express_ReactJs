@@ -42,6 +42,8 @@ const ProductDetails = () => {
       setPrimaryImage(primary);
       setOtherImages(others);
     }
+
+
   }, [productDetails]);
 
   const handleDelete = async (productId) => {
@@ -109,7 +111,7 @@ const ProductDetails = () => {
       <div className="mb-4">
         <h1 className="text-3xl font-bold mb-2">{productDetails.name}</h1>
         <p className="text-gray-500 text-sm mb-1">
-          Category: {productDetails.subcategory?.name || "N/A"}
+          SubCategory: {productDetails.subcategory?.name || "N/A"}
         </p>
         <p className="text-green-600 font-bold text-xl mb-4">${productDetails.price}</p>
         <span

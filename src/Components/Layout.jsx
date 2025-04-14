@@ -8,6 +8,7 @@ const Layout = () => {
   const location = useLocation();
 
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+  const isProductsPage = location.pathname === '/products' || location.pathname === '/productdetails/:id';
 
   return (
     <div className='bg-gray-50'>
@@ -35,9 +36,13 @@ const Layout = () => {
                 </>
               ) : (
                 <>
+                {!isProductsPage && (
                   <Link to="/products" className="hover:underline">
                     Products
                   </Link>
+  
+                )
+                }
                   <Link to="/login" className="hover:underline">
                     Login
                   </Link>

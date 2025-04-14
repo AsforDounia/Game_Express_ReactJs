@@ -28,8 +28,9 @@ export const CategoryProvider = ({ children }) => {
         try {
             const response = await apiV1.delete(`categories/${id}`);
             setCategories(prev => prev.filter(category => category.id !== id));
-            navigate('/categories');
+            // navigate('/categories');
         } catch (err) {
+            confirm(err.response?.data?.message);
             setError(err.response?.data?.message || 'Failed to delete category');
         } finally {
             setLoading(false);
@@ -50,6 +51,7 @@ export const CategoryProvider = ({ children }) => {
         setLoading(true);
         try {
             const response = await apiV1.put(`categories/${id}`, categoryData);
+            setCategories(prev => prev.map(category => category.id === id ? response.data.category : category));
             // navigate('/categories');
         }
         catch (err) {

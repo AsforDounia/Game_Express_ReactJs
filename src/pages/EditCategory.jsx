@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useCategory } from "../context/CategoryContext";
 import { toast } from "react-toastify";
+import { IoMdReturnLeft } from "react-icons/io";
 
 const EditCategory = () => {
   const { id } = useParams();
@@ -54,6 +55,9 @@ useEffect(() => {
   return (
     <div className="max-w-xl mx-auto p-8">
       <h1 className="text-2xl font-semibold mb-6">Edit Category</h1>
+      <Link to={`/categories`}>
+                <IoMdReturnLeft className="text-2xl text-gray-500 hover:text-gray-700 mb-4" />
+            </Link>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium">Name</label>

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useProducts } from "../context/ProductContext";
 import { useAuth } from "../context/AuthContext";
-import { FaTrash, FaEdit } from "react-icons/fa";
+import { FaTrash, FaEdit , FaCartPlus } from "react-icons/fa";
+
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ProductList = () => {
   const navigate = useNavigate();
@@ -35,6 +37,7 @@ const ProductList = () => {
     setLoading(true);
     try {
       await deleteProduct(productId);
+      toast.success("Product deleted successfully.");
     } finally {
       setLoading(false);
     }
@@ -108,6 +111,9 @@ const ProductList = () => {
                   </span>
                 </div>
                 <p className="text-sm mt-1 text-gray-400">Stock: {product.stock}</p>
+                <button className="mt-3 flex justify-center items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 w-full">
+                  <FaCartPlus /> Add to Cart
+                </button>
               </div>
             </Link>
           </div>

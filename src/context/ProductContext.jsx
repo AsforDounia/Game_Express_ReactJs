@@ -43,7 +43,7 @@ export const ProductProvider = ({ children }) => {
             const response = await apiV1.post('products', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
-            console.log(response.data.product);
+            
             setProducts(prev => [...prev, response.data.product]);
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to create product');
@@ -62,11 +62,10 @@ export const ProductProvider = ({ children }) => {
                     'X-HTTP-Method-Override': 'PUT'
                 }
             });
-            console.log(response);
             setProducts(prev =>
                 prev.map(p => (p.id === id ? response.data.product : p))
             );
-            console.log(response.data.product);
+            
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to update product');
         } finally {
