@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useProducts } from "../context/ProductContext";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaCartPlus, FaEdit, FaTrash } from "react-icons/fa";
 import { IoMdReturnLeft } from "react-icons/io";
 import { useAuth } from "../context/AuthContext";
 
@@ -77,8 +77,8 @@ const ProductDetails = () => {
         <IoMdReturnLeft className="text-2xl text-gray-500 hover:text-gray-700 mb-4" />
       </Link>
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-3xl font-bold mb-4">{productDetails.name} Details</h1>
-        {(isSuperAdmin || isProductManager) && (
+        <h1 className="text-3xl font-bold">{productDetails.name} Details</h1>
+        {(isSuperAdmin || isProductManager) ? (
           <div className="text-2xl font-bold mb-4 flex gap-2">
             <button
               onClick={() => navigate(`/editproduct/${productDetails.id}`)}
@@ -93,7 +93,12 @@ const ProductDetails = () => {
               <FaTrash />
             </button>
           </div>
+        ) : (
+          <button className="mt-3 flex justify-center items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 cursor-pointer">
+            <FaCartPlus /> Add to Cart
+          </button>
         )}
+
       </div>
 
       {/* Display Primary Image */}
@@ -115,11 +120,10 @@ const ProductDetails = () => {
         </p>
         <p className="text-green-600 font-bold text-xl mb-4">${productDetails.price}</p>
         <span
-          className={`inline-block px-3 py-1 mb-3 text-sm font-medium rounded-full ${
-            productDetails.status === "available"
+          className={`inline-block px-3 py-1 mb-3 text-sm font-medium rounded-full ${productDetails.status === "available"
               ? "bg-green-100 text-green-800"
               : "bg-red-100 text-red-800"
-          }`}
+            }`}
         >
           {productDetails.status === "available" ? "In Stock" : "Out of Stock"}
         </span>

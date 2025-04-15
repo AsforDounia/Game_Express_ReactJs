@@ -69,22 +69,7 @@ const ProductList = () => {
             key={product.id}
             className="shadow-md rounded-2xl overflow-hidden border"
           >
-            {(isSuperAdmin || isProductManager) && (
-              <div className="flex gap-2 justify-end mt-4 relative left-0 mx-4 z-30">
-                <button
-                  onClick={() => handleEdit(product.id)}
-                  className=" text-blue-500  hover:text-blue-700"
-                >
-                  <FaEdit />
-                </button>
-                <button
-                  onClick={() => handleDelete(product.id)}
-                  className=" text-red-500 hover:text-red-700  cursor-pointer"
-                >
-                  <FaTrash />
-                </button>
-              </div>
-            )}
+            
             <Link to={`/productdetails/${product.id}`}>
               <div className="flex justify-center items-center h-48 bg-gray-200 rounded-t-2xl overflow-hidden z-10 relative -top-8 -mb-8">
                 <img
@@ -111,9 +96,27 @@ const ProductList = () => {
                   </span>
                 </div>
                 <p className="text-sm mt-1 text-gray-400">Stock: {product.stock}</p>
-                <button className="mt-3 flex justify-center items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 w-full">
-                  <FaCartPlus /> Add to Cart
-                </button>
+                {(isSuperAdmin || isProductManager) ? (
+                  <div className="flex justify-between gap-2 mt-4 z-30">
+                    <button
+                      onClick={() => handleEdit(product.id)}
+                      className="flex  gap-2 justify-center rounded-md items-center text-white bg-blue-500 hover:bg-blue-700 cursor-pointer w-1/2 text-center py-2"
+                    >
+                       <FaEdit /> Modify
+                    </button>
+                    <button
+                      onClick={() => handleDelete(product.id)}
+                      className="bg-red-500 text-white rounded-md flex gap-2 justify-center items-center hover:bg-red-700 cursor-pointer w-1/2 text-center py-2"
+                    >
+                       <FaTrash /> Delete
+                    </button>
+                  </div>
+                ) : (
+                  <button className="mt-3 flex justify-center items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 w-full cursor-pointer">
+                    <FaCartPlus /> Add to Cart
+                  </button>
+                )}
+
               </div>
             </Link>
           </div>

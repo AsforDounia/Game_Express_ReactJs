@@ -6,7 +6,6 @@ const Sidebar = () => {
   const { user } = useAuth();
   const roles = user?.roles?.map(role => role.name);
   const location = useLocation();
-  const [isOpen, setIsOpen] = useState(true);
 
   const isSuperAdmin = roles?.includes('super_admin');
 
@@ -23,7 +22,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className={`bg-blue-950 text-white fixed top-15 w-64 min-h-full pl-12 p-4 z-40 ${!isOpen && 'hidden md:block'}`}>
+    <aside className={`bg-blue-950 text-white fixed top-15 w-72 min-h-full pl-22 p-4 z-40 `}>
       <nav className="flex flex-col space-y-4 py-8">
         {links.map(link => (
           <Link

@@ -15,10 +15,8 @@ const Layout = () => {
       {!isAuthPage && (
         <header className="bg-blue-950 text-white fixed top-0 left-0 w-full z-10 shadow-md h-16 flex flex-col justify-center px-2 z-40">
           <div className="container px-12 py-4 flex justify-between items-center">
-          <div className="text-2xl font-bold">{roles == 'super_admin' ? "admin" : roles} Panel</div>
-            {/* <h1 className="text-4xl font-bold text-amber-50">
-              Game<span className="text-white">Express</span>
-            </h1> */}
+          <h1 className="text-xl font-semibold capitalize">{(!roles || roles == "client") ? "GameXpress" : "Dashboard " + roles} </h1>
+
             <div className="flex items-center space-x-4">
               {isAuthenticated ? (
                 <>
@@ -30,7 +28,7 @@ const Layout = () => {
                   <Link to="/profile" className="hover:underline">
                     Profile
                   </Link>
-                  <button onClick={logout} className="hover:underline">
+                  <button onClick={logout} className="hover:underline cursor-pointer">
                     Logout
                   </button>
                 </>
